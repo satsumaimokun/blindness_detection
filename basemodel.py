@@ -1,21 +1,7 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 from google.colab import drive
 drive.mount('/content/drive')
 
-
-# In[ ]:
-
-
 cd /content/drive/My Drive/aptos2019-blindness-detection
-
-
-# In[19]:
-
 
 # パッケージのimport
 from sklearn.model_selection import train_test_split
@@ -38,18 +24,10 @@ import torch.utils.data as data
 import torchvision
 from torchvision import models, transforms
 
-
-# In[20]:
-
-
 # 乱数のシードを設定
 torch.manual_seed(1234)
 np.random.seed(1234)
 random.seed(1234)
-
-
-# In[21]:
-
 
 # 入力画像の前処理をするクラス(切り取るだけ)
 
@@ -64,10 +42,6 @@ class ImageTransform():
 
     def __call__(self, img):
         return self.data_transform(img)
-
-
-# In[22]:
-
 
 # 画像へのファイルパスのリストを作成する
 
@@ -105,10 +79,6 @@ train_and_val_list = make_datapath_list(phase="train")
 
 #train_and_val_list
 
-
-# In[23]:
-
-
 # 訓練データ(traindata)と検証データ(valdata)をtrain_test_splitで分けてtrain_listとval_listを作る
 train_csv_file = "train.csv"
 df = pd.read_csv(train_csv_file)
@@ -140,16 +110,8 @@ print(len(val_list))
 print(len(train_and_val_list))
 print(len(train_list)/len(train_and_val_list))
 
-
-# In[24]:
-
-
 print(diagnosis.value_counts())
 print(diagnosis.mean())
-
-
-# In[25]:
-
 
 # 画像のDatasetを作成する
 
@@ -222,10 +184,6 @@ print(train_dataset.__getitem__(index)[1])
 # plt.imshow(img_transformed)
 # plt.show()
 
-
-# In[26]:
-
-
 # ミニバッチのサイズを指定
 batch_size = 16
 
@@ -248,10 +206,6 @@ inputs, labels = next(batch_iterator)  # 1番目の要素を取り出す
 print(inputs.size())
 print(labels)
 
-
-# In[27]:
-
-
 # 学習済みのresnet101モデルをロード
 # resnet101モデルのインスタンスを生成
 use_pretrained = True  # 学習済みのパラメータを使用
@@ -264,10 +218,6 @@ net.fc = nn.Linear(in_features=2048, out_features=1)
 net.train()
 
 print('ネットワーク設定完了：学習済みの重みをロードし、訓練モードに設定しました')
-
-
-# In[3]:
-
 
 # #重みをロードする
 # load_path = "./weights_basemodel.pth"
@@ -283,23 +233,11 @@ print('ネットワーク設定完了：学習済みの重みをロードし、�
 
 # print('ネットワーク設定完了：学習済みの重みをロードし、訓練モードに設定しました')
 
-
-# In[28]:
-
-
 # モデルを見てみる
 #print(models.resnet101(pretrained=True))
 
-
-# In[29]:
-
-
 # 損失関数の設定
 criterion = nn.MSELoss()
-
-
-# In[30]:
-
 
 # 学習させるパラメータを、変数params_to_updateの1,2に格納する
 
@@ -329,20 +267,12 @@ for name, param in net.named_parameters():
         param.requires_grad = False #とりあえず他のやつは勾配計算しない
         #print("勾配計算なし。学習しない：", name)
 
-
-# In[31]:
-
-
 # 最適化手法の設定
 optimizer = optim.Adam([
     {'params': params_to_update_1, 'lr': 1e-4},
     {'params': params_to_update_2, 'lr': 1e-3},
 ], lr=0.001)
 scheduler = optim.lr_scheduler.StepLR(optimizer, step_size=4) #4epochsでlrを1/10倍
-
-
-# In[32]:
-
 
 # モデルを学習させる関数を作成
 
@@ -431,27 +361,15 @@ def train_model(net, dataloaders_dict, criterion, optimizer, num_epochs):
             epoch_loss = epoch_loss / len(dataloaders_dict[phase].dataset)
             epoch_acc = epoch_acc / len(dataloaders_dict[phase].dataset)
             print("{} Loss: {:.4f}".format(phase, epoch_loss))
-            print("{} acc: {:.4f}".format(phase, epoch_acc))
-
-
-# In[33]:
-
-
+            print("{} acc: {:.4f}".format(phase, epoch_acc)
+                  
 # 学習・検証を実行する
 num_epochs=13
 train_model(net, dataloaders_dict, criterion, optimizer, num_epochs=num_epochs)
 
-
-# In[44]:
-
-
 #重みを保存する
 save_path = "./weights_basemodel.pth"
 torch.save(net.state_dict(),save_path)
-
-
-# In[51]:
-
 
 #重みをロードする
 load_path = "./weights_basemodel.pth"

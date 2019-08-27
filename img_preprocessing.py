@@ -1,21 +1,7 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[ ]:
-
-
 from google.colab import drive
 drive.mount('/content/drive')
 
-
-# In[ ]:
-
-
 cd /content/drive/My Drive/aptos2019-blindness-detection
-
-
-# In[4]:
-
 
 # パッケージのimport
 from sklearn.model_selection import train_test_split
@@ -38,18 +24,10 @@ import torch.utils.data as data
 import torchvision
 from torchvision import models, transforms
 
-
-# In[5]:
-
-
 # 乱数のシードを設定
 torch.manual_seed(1234)
 np.random.seed(1234)
 random.seed(1234)
-
-
-# In[6]:
-
 
 # 入力画像の前処理をするクラス(切り取るだけ)
 
@@ -64,10 +42,6 @@ class ImageTransform():
 
     def __call__(self, img):
         return self.data_transform(img)
-
-
-# In[8]:
-
 
 # 訓練時の画像前処理の動作を確認
 
@@ -87,4 +61,3 @@ img_transformed = img_transformed.numpy().transpose((1, 2, 0))
 img_transformed = np.clip(img_transformed, 0, 1)
 plt.imshow(img_transformed)
 plt.show()
-
